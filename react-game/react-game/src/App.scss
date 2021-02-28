@@ -1,0 +1,154 @@
+$black: #000;
+$white: #fff;
+$background: #282c34;
+
+@import "~bootstrap/scss/bootstrap";
+
+.App {
+  text-align: center;
+}
+
+.wrapper {
+  background-color: $background;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: $white;
+}
+
+.header {
+  background: $black;
+    border-radius: 0 0 3rem 3rem;
+    height: 5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+          .logo {
+            width: 4rem;
+            background-image: url(./assets/image/logo.png);
+            background-size: cover;
+            height: 4rem;
+            align-self: center;
+            margin-left: 4rem;
+            margin-top: 0.5rem;
+          }
+
+          .title {
+            align-self: center;
+          }
+}
+
+.content {
+  overflow: hidden;
+    height: calc(100vh - 9rem);
+}
+
+.content__cards {
+  position: relative;
+    width: 9rem;
+    height: 15.5rem;
+    top: 20rem;
+    left: calc(100%/8);
+}
+
+
+.flip {
+  perspective: 800px; /* */
+ }
+ .card {
+  position: relative; /* Относительное позиционирование */
+  transition: transform 1s;
+  transform-style: preserve-3d; /* Вращение в 3D */
+  border: 0;
+        img {
+          box-shadow: 0 0 2px 0 rgba(0,0,0,0.4);
+        }
+ }
+ .card:hover {
+ // transform: rotateY(180deg); /* При наведении вращаем */
+ cursor: pointer;
+ }
+ .card-face {
+  position: absolute; /* Абсолютное позиционирование */
+  top: 0; bottom: 0; /* Задаём так высоту */
+  backface-visibility: hidden; /* Скрываем обратную поверхность */
+ }
+ .card-face.back {
+  transform: rotateY(180deg); /* Поворачиваем текст */ 
+ }
+
+
+
+
+.CardConteinters {
+  display: flex;
+  position: relative;
+  top: -5rem;
+  left: calc(100%/3);
+      div {
+        width: 9rem;
+        height: 15.5rem;
+        border: 2px white solid;
+        margin: 1rem;
+            &:hover {
+              cursor: pointer;
+            }
+          img {
+            position: relative;
+            top: 0;
+            left:0;
+            width: 9rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border-radius: 5%;
+          }
+      }
+}
+
+.footer{
+  background:$black;
+  padding: 0 4rem;
+  position: absolute;
+  bottom: 0;
+    width: 100%;
+    height: 4rem;
+   display: flex;
+   justify-content: space-between;
+      h2 {
+        align-self: center;
+      }
+      a {
+        font-family: cursive;
+        font-size: 1.5rem;
+        text-decoration: none;
+        color: $white;
+        align-self: center;
+          &:hover {
+            opacity: 0.5;
+          }
+      }
+      img {
+        height: 2rem;
+        align-self: center;
+      }
+}
+
+
+
+:-webkit-full-screen {
+  background: red;
+}
+:-moz-full-screen {
+  background: red;
+}
+
+/* полноэкранное отображение <video> */
+
+:-webkit-full-screen video {
+  width: 100%;
+  height: 100%;
+}
+
+:-moz-full-screen video {
+  width: 100%;
+  height: 100%;
+}
