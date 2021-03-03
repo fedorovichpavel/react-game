@@ -12,3 +12,8 @@ ReactDOM.render(
 );
 
 reportWebVitals();
+
+window.onload = () => {
+  document.querySelector('#rad_player').style.height = '3rem';
+  document.querySelector('#rad_player > div').style.display = 'flex';
+}

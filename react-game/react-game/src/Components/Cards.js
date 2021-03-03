@@ -1,141 +1,176 @@
-import React, {useState} from 'react';
-
-const cardsArr = [21,22,23,24,31,32,33,34,41,42,43,44,51,52,53,54,61,62,63,64,71,72,73,74,81,82,83,84,91,92,93,94,101,102,103,104,'j1', 'j2', 'j3', 'j4', 'q1','q2','q3','q4','k1','k2','k3','k4','a1','a2','a3','a4'];
-cardsArr.sort(() => Math.random() - 0.5);
-export function Cards122(props) {
- const [card, setCard] = useState(cardsArr.length);
- function deleteCard() {
-  //setCard(cardsArr.length);
-  console.log(props);
- }
-
- //if (card !== cardsArr.length) {setCard(cardsArr.length)};
- return (
-  <div className="content__cards">
-   <div className="card" onClick={deleteCard} >
-    {props.cardsarray.map((e,i) => {
-     return <img src={`./cards/${e.toString()}.png`} key={i} style={{width: '100%', left: -i/30+'rem', top: i/50+'rem'}} className="card-face front" />
-    })}
-   </div>
-  </div>
- )
-}
+import React from 'react';
 
 export class Cards extends React.Component {
  constructor(props) {
   super(props);
-  this.state = {array: this.props.cardsarray}
+  this.state = JSON.parse(localStorage.getItem('state_cards')) ? JSON.parse(localStorage.getItem('state_cards')) : {array: this.props.cardsarray, cards1: [], cards2: [], cards3: [], cards4: [], trash: [], style1: '0.5rem #00ff4c solid', style2: '0.5rem #00ff4c solid', style3: '0.5rem #00ff4c solid', style4: '0.5rem #00ff4c solid', cont1: 0, cont2: 0,cont3: 0,cont4: 0,a1:false, pressKey: false, volume: this.props.volume()/100}
+   this.setState({style1: '0.5rem #00ff4c solid',style2: '0.5rem #00ff4c solid',style3: '0.5rem #00ff4c solid',style4: '0.5rem #00ff4c solid'});
+   setInterval(() => {
+      this.checkNewGame.call(this);
+   }, 1000);
+}
+
+_handleKeyDown = (event) => {
+   if (!event.repeat) {
+      switch( event.key) {
+         case '1':
+            this.deleteCard.call(this, {target:{id:'cards1'}});
+              break;
+         case '2':
+            this.deleteCard.call(this, {target:{id:'cards2'}});
+              break;
+          case '3':
+            this.deleteCard.call(this, {target:{id:'cards3'}});
+              break;
+         case '4':
+            this.deleteCard.call(this, {target:{id:'cards4'}});
+              break;
+          case ' ':
+            this.deleteCard.call(this, {target:{id:'trash'}});
+              break;
+          default:
+              break;
+      }
+   }
+}
+
+componentDidMount(){
+   document.addEventListener("keyup", this._handleKeyDown);
+}
+
+componentWillUnmount() {
+   document.removeEventListener("keyup", this._handleKeyDown);
+}
+
+ checkNewGame() {
+    if (this.props.newgame) {this.setState({array: this.props.cardsarray, cards1: [], cards2: [], cards3: [], cards4: [], trash: [], style1: '0.5rem #00ff4c solid', style2: '0.5rem #00ff4c solid', style3: '0.5rem #00ff4c solid', style4: '0.5rem #00ff4c solid', cont1: 0, cont2: 0,cont3: 0,cont4: 0})
+    localStorage.setItem('state_cards',JSON.stringify(this.state));
+   }
  }
 
- deleteCard() {
-  //setCard(cardsArr.length);
-  console.log(this.props);
-  this.props.deletecard();
-  this.setState({array: this.props.cardsarray});
+ sound(path){
+    this.setState({volume: this.props.volume() /100});
+    this.audio = new Audio(path);
+    this.audio.volume = this.state.volume;
+    this.audio.play();
+ }
+
+ deleteCard(event) {
+    if (this.state.array.length === 0) { return}
+    if (this.state.array.length === 1) {
+      this.props.score(this.props.stoptimer());
+      }
+  const e = event.target.id;
+  const conteiner = this.state[e].map(e => {
+   if (typeof e == 'string') {return e[0] === 'a' ? (e[1] === 'o' ? 1 : 11) : 10;}  
+   else {return +e.toString().slice(0,-1)} });
+   const last = this.state.array[this.state.array.length - 1];
+   let lastCard = typeof last === 'string' ? (last[0] !== 'a' ? 10 : 11)  : last.toString().slice(0,-1);
+  if (this.state.cards1[0]){
+
+  }
+
+  if (this.state[e].length === 6 && e !== 'trash') {
+   
+  } else {
+   if (e === 'trash' && this.state.array.length === 0) {
+         return
+   } else {
+      if (e === 'trash') { 
+         this.sound.call(this, "./click.mp3");
+      this.setState({[e]: [...this.state[e], this.props.deletecard()]});
+      this.setState({array: this.props.cardsarray});
+      this.setState({a1: false});
+      localStorage.setItem('state_cards',JSON.stringify(this.state))
+      if (this.props.cardsarray.length === 51) {this.props.timer()}
+      return
+   }
+    if (conteiner.length !== 0){
+     if(conteiner.reduce((a,e) => a+e) + +lastCard <= 21) {
+      this.setState({[e]: [...this.state[e], this.props.deletecard()]});
+      this.setState({array: this.props.cardsarray});
+      this.setState({[`cont${e.slice(-1)}`]: conteiner.reduce((a,e) => a+e) + +lastCard}); 
+         if(this.state[e].length === 5) {
+            this.props.score(+e.toString().slice(-1)*100);
+         this.setState({trash: [...this.state.trash, ...this.state[e], 1]});
+         this.setState({[e]: []});
+         this.setState({[`cont${e.slice(-1)}`]: 0});
+         }
+      localStorage.setItem('state_cards',JSON.stringify(this.state))
+      this.props.score(10);
+      this.sound.call(this, "./click.mp3");
+      this.setState({a1: false});
+   } else if(lastCard === 11 && conteiner.reduce((a,e) => a+e) + 1 <= 21){
+      this.sound.call(this, "./click.mp3");
+      console.log('push',conteiner.reduce((a,e) => a+e) + +lastCard);
+      let cardA = this.props.deletecard();
+      this.setState({[e]: [...this.state[e], cardA[0]+'o'+cardA[1]]});
+      this.setState({a1: true});
+      this.setState({array: this.props.cardsarray});
+      this.setState({[`cont${e.slice(-1)}`]: conteiner.reduce((a,e) => a+e) + 1});
+      localStorage.setItem('state_cards',JSON.stringify(this.state))
+      this.props.score(10);
+   } else {this.wrongChose.call(this, e);}
+    }  
+    if (conteiner.length === 0) { 
+      this.sound.call(this, "./click.mp3");
+      this.setState({[e]: [...this.state[e], this.props.deletecard()]});
+      this.setState({array: this.props.cardsarray});
+      this.setState({[`cont${e.slice(-1)}`]: this.state[`cont${e.slice(-1)}`] + +lastCard});
+      this.setState({a1: false});
+      localStorage.setItem('state_cards',JSON.stringify(this.state))
+      this.props.score(10);
+    }
+    if (e !== 'trash' && conteiner.length !==0) {
+      if (conteiner.reduce((a,e) => a+e) + +lastCard === 21) {
+         this.props.score(+e.toString().slice(-1)*100);
+         this.setState({trash: [...this.state.trash, ...this.state[e], 1]});
+         this.setState({[e]: []});
+         this.setState({[`cont${e.slice(-1)}`]: 0});
+         localStorage.setItem('state_cards',JSON.stringify(this.state))
+         this.sound.call(this, "./success.mp3");
+         this.setState({a1: false});
+      } 
+    }
+      
+   }
+  }
+  if (this.props.cardsarray.length === 51) {this.props.timer(); 
+   this.setState({a1: false});
+}
+
+ }
+
+ wrongChose(e) {
+   this.sound.call(this, "./fail.mp3");
+    const element = `style${e.slice(-1)}`
+    this.setState({[element] : '0.5rem red solid'});
+    setTimeout(() => {
+      this.setState({[element]: '0.5rem #00ff4c solid'});
+    }, 1500);
  }
 
  render() {
   return(
-   <div>
+   <div className="content_block">
 <div className="content__cards">
-   <div className="card" onClick={this.deleteCard.bind(this)} changeState={() => this.props.changeState(this.deleteCard)}>
+   <div className="card" >
     {this.state.array.map((e,i) => {
-     return <img src={`./cards/${e.toString()}.png`} key={i} style={{width: '100%', left: -i/30+'rem', top: i/50+'rem'}} className="card-face front" />
+     return <img src={`./cards/${e.toString()}.png`} alt='' key={i} style={{width: '100%', left: -i/30+'rem', top: i/50+'rem'}} className="card-face front" />
     })}
    </div>
+   <h2 style={{position:'relative', top: '17rem', paddingRight: '2rem'}}>{this.state.array.length}</h2>
   </div>
-  <div className="CardConteinters">
-     <CardCont1 card={cardsarray[cardsarray.length -1]} delete={deletecard} changeState={changeState}/>
-     <CardCont2 />
-     <CardCont3 />
-     <CardCont4 />
+  <div className="CardConteinters" >
+     <div className="cardCont1" style={{border: this.state.style1}} id='cards1' onClick={this.deleteCard.bind(this)}><h2 id='cards1'>{this.state.cont1}</h2>{this.state.cards1.map((e,i) => <img key={i} id='cards1' alt='' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>)}</div>
+     <div className="cardCont2" style={{border: this.state.style2}} id='cards2' onClick={this.deleteCard.bind(this)}><h2 id='cards2'>{this.state.cont2}</h2>{this.state.cards2.map((e,i) => <img key={i} id='cards2' alt='' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>)}</div>
+     <div className="cardCont3" style={{border: this.state.style3}} id='cards3' onClick={this.deleteCard.bind(this)}><h2 id='cards3'>{this.state.cont3}</h2>{this.state.cards3.map((e,i) => <img key={i} id='cards3' alt='' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>)}</div>
+     <div className="cardCont4" style={{border: this.state.style4}} id='cards4' onClick={this.deleteCard.bind(this)}><h2 id='cards4'>{this.state.cont4}</h2>{this.state.cards4.map((e,i) => <img key={i} id='cards4' alt='' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>)}</div>
   </div>
-
+    <div className="trash" id='trash' onClick={this.deleteCard.bind(this)}>
+    {this.state.trash.map((e,i) => <img key={i} id='trash' alt="" src={`./cards/blue.png`} style={{top:`${i/50}rem`, left:`${-i/30}rem`}}/>)}
+    </div>
    </div>
   ) 
  }
-}
-
-let Cards1 = [];
-let Cards2 = [];
-let Cards3 = [];
-let Cards4 = [];
-
-function CardCont1(props) {
- const { card } = props;
- const [cards, setCards] = useState(Cards1.length);
- let count = 0;
- function pushImg(event){
-  Cards1.push(card);
-  cardsArr.pop();
-  count+=4;
-  setCards(Cards1.length);
-  console.log(props.changeState);
-  props.changeState();
-  //document.querySelector('.card').click();
- }
-
- return (
- <div className="cardCont1" id='cont1' onClick={Cards1.length > 4 ? eerr : pushImg}>{cards === Cards1.length ? Cards1.map((e,i) => <img key={i} id='cont1' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>) : ''}</div>
- ) 
- }
-
- function CardCont2() {
-  const [cards, setCards] = useState(Cards2.length);
-  let count = 0;
-  function pushImg(event){
-   Cards2.push(cardsArr[cardsArr.length-1]);
-     cardsArr.pop();
-   count+=4;
-   setCards(Cards2.length);
-   document.querySelector('.card').click();
-  }
- 
-  return (
-  <div className="cardCont2" id='cont2' onClick={Cards2.length > 4 ? eerr : pushImg}>{cards === Cards2.length ? Cards2.map((e,i) => <img key={i} id='cont1' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>) : ''}</div>
-  ) 
-  }
-
-  function CardCont3() {
-   const [cards, setCards] = useState(Cards3.length);
-   let count = 0;
-   function pushImg(event){
-    Cards3.push(cardsArr[cardsArr.length-1]);
-     cardsArr.pop();
-    count+=4;
-    setCards(Cards3.length);
-    document.querySelector('.card').click();
-   }
-  
-   return (
-   <div className="cardCont3" id='cont3' onClick={Cards3.length > 4 ? eerr : pushImg}>{cards === Cards3.length ? Cards3.map((e,i) => <img key={i} id='cont1' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>) : ''}</div>
-   ) 
-   }
-
-   function CardCont4() {
-    const [cards, setCards] = useState(Cards4.length);
-    let count = 0;
-    function pushImg(event){
-     Cards4.push(cardsArr[cardsArr.length-1]);
-     cardsArr.pop();
-     count+=4;
-     setCards(Cards4.length);
-     document.querySelector('.card').click();
-    }
-
-    return (
-    <div className="cardCont4" id='cont4' onClick={Cards4.length > 4 ? eerr : pushImg}>{cards === Cards4.length ? Cards4.map((e,i) => <img key={i} id='cont1' src={`./cards/${e}.png`} style={{top:`${-i*12}rem`, left:`${-i/2}rem`}}/>) : ''}</div>
-    ) 
-    }
-
-    function eerr(){
-     console.log('hvatit')
-   }
-
-export function CardConteiners(props) {
- console.log(props, ' prro')
- const {cardsarray, deletecard, changeState} = props;
-  return (
-   <div />
-  )
 }

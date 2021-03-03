@@ -38,16 +38,35 @@ $background: #282c34;
           }
 }
 
+.rulesBtn {
+  height: fit-content;
+    align-self: center;
+    padding-right: 2rem;
+}
+
+.volumeonoff:hover {
+  cursor: pointer;
+}
+
 .content {
   overflow: hidden;
     height: calc(100vh - 9rem);
 }
 
+.score {
+  padding-top: 2rem;
+  margin-right: 10rem;
+}
+
+.list-group-item {
+  background-color: rgba(255,255,255,0.6);
+}
+
 .content__cards {
-  position: relative;
+  position: absolute;
     width: 9rem;
     height: 15.5rem;
-    top: 20rem;
+    top: 22rem;
     left: calc(100%/8);
 }
 
@@ -63,10 +82,6 @@ $background: #282c34;
         img {
           box-shadow: 0 0 2px 0 rgba(0,0,0,0.4);
         }
- }
- .card:hover {
- // transform: rotateY(180deg); /* При наведении вращаем */
- cursor: pointer;
  }
  .card-face {
   position: absolute; /* Абсолютное позиционирование */
@@ -84,11 +99,12 @@ $background: #282c34;
   display: flex;
   position: relative;
   top: -5rem;
-  left: calc(100%/3);
+  left: 40rem;
       div {
         width: 9rem;
-        height: 15.5rem;
-        border: 2px white solid;
+        height: 18rem;
+        border: 0.5rem #00ff4c solid;
+        border-radius: 10%;
         margin: 1rem;
             &:hover {
               cursor: pointer;
@@ -97,11 +113,29 @@ $background: #282c34;
             position: relative;
             top: 0;
             left:0;
-            width: 9rem;
+            width: 100%;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             border-radius: 5%;
           }
       }
+}
+
+.trash {
+  position: relative;
+  bottom: 10rem;
+  left: 90rem;
+    width: 9rem;
+    height: 15rem;
+    img {
+      position: absolute;
+      box-shadow: 0 0 2px 0 rgba(0,0,0,0.4);
+      width: 100%;
+    }
+    border: 0.5rem #f00 solid;
+    border-radius: 10%;
+        &:hover {
+          cursor: pointer;
+        }
 }
 
 .footer{
@@ -133,22 +167,260 @@ $background: #282c34;
 }
 
 
-
-:-webkit-full-screen {
-  background: red;
+.modal-rules {
+  height: 100vh;
+  width:100vw;
+  background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  z-index: 1003;
+  top:0;
+  left:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s;
 }
-:-moz-full-screen {
-  background: red;
+.modal-rules.active {
+  opacity: 1;
+  pointer-events: all;
 }
 
-/* полноэкранное отображение <video> */
-
-:-webkit-full-screen video {
-  width: 100%;
-  height: 100%;
+.modal-rules__content {
+  padding:2rem;
+  border-radius: 1rem;
+  background-color: $white;
+  width: 80vw;
+  transform: scale(0.5);
+  transition: 0.4s all;
+  color:$black;
+        p{
+          margin-bottom: 0.2rem;
+          font-size: 1.2rem;
+          float: left;
+        }
+}
+.modal-rules__content.active {
+  transform: scale(1);
 }
 
-:-moz-full-screen video {
-  width: 100%;
-  height: 100%;
+.modal-game {
+  height: 100vh;
+  width:100vw;
+  background-color: rgba(0,0,0,0.4);
+  position: fixed;
+  z-index: 1003;
+  top:0;
+  left:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.5s;
 }
+.modal-game.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-game__content {
+  padding:2rem;
+  border-radius: 1rem;
+  background-color: $white;
+  width: 80vw;
+  transform: scale(0.5);
+  transition: 0.4s all;
+  color:$black;
+        p{
+          font-size: 1.3rem;
+        }
+}
+.modal-game__content.active {
+  transform: scale(1);
+}
+
+.btn-submitscore {
+  background-color: $white;
+  color: #28a745;
+    border-color: #28a745;
+    border-radius: 5px;
+        &:hover{
+          background-color: #28a745;
+          color: $white;
+        }
+}
+
+#radiobells_container {
+  position: absolute;
+    top: 0;
+    right: calc(100%/6);
+    margin: 1rem 0;
+        #rad_player{
+          border-radius: 1rem;
+        }
+        #rad_block_logo {
+          display: none;
+        }
+}
+
+#rad_select_main_image {
+  width: 2rem!important;
+  height: 2rem!important; 
+  padding: 0.5rem 1rem 0.5rem!important;}
+  #rad_dropdown {
+    padding-top: 0!important; 
+}
+  #rad_block_play {
+    padding: 0.5rem!important;
+    margin-right: 0.5rem !important;
+        img {
+          width: 2rem!important;
+        }
+    }
+  #rad_player {
+    width: 25rem !important;
+    min-width: 21rem !important;
+  }
+  #rad_stationname {
+    width: 12rem !important;
+  }
+  #rad_block_select{
+    width: 1rem !important;
+  }
+  #rad_dropdown{
+      display: none;
+  }
+  #rad_select{
+    font-size: 1.5rem!important;
+  }
+
+  #rad_block_volume {
+    padding: 0.3rem!important;
+    margin-left: 15rem!important;
+  }
+  #rad_sound_btn {
+    width: 2.5rem !important;
+}
+@media screen and (max-width: 1700px){
+ :root {
+   font-size: 15px;
+ }
+ .CardConteinters {
+   left: 40rem;
+ }
+}
+@media screen and (max-width: 1550px){
+  :root {
+    font-size: 14px;
+  }
+ }
+ @media screen and (max-width: 1450px){
+  :root {
+    font-size: 13px;
+  }
+ }
+ @media screen and (max-width: 1330px){
+  :root {
+    font-size: 12px;
+  }
+ }
+ @media screen and (max-width: 1240px){
+  :root {
+    font-size: 11px;
+  }
+ }
+ @media screen and (max-width: 1100px){
+  :root {
+    font-size: 10px;
+  }
+ }
+ @media screen and (max-width: 1000px) and (min-width: 800px){
+  :root {
+    font-size: 9px;
+  }
+  .content_block{
+    margin-top:20rem;
+  }
+  .content__cards {
+  top:45rem;
+  }
+  .score-list {
+    height: 16rem;
+  }
+  .list-group {
+    width: 54rem !important;
+    height: 27rem !important;
+  }
+  .list-group-item {
+    font-size: 2rem;
+  }
+  .score {
+    position: relative;
+    top: 15rem;
+    left: 3rem; 
+    width: 6rem;
+    margin-right: 0;
+    h2{
+      font-size: 3rem;
+    }
+  }
+  .h2timer {
+    position: relative;
+    top: 25rem !important;
+    right: 11rem !important;
+    font-size: 3rem !important;
+    width: 25rem;
+  }
+ }
+
+ @media screen and (max-width: 920px){
+  :root {
+    font-size: 8px;
+  }
+ }
+ @media screen and (max-width: 800px){
+  :root {
+    font-size: 7px;
+  }
+  .score-list {
+    position: relative;
+    top: 50rem;
+    left: calc(100%/4);
+    width: 1rem;
+    height: 18rem;
+    
+  }
+  .list-group {
+    width: 60rem !important;
+    height: 30rem !important;
+  }
+  .list-group-item {
+    font-size: 2rem;
+  }
+ }
+ @media screen and (max-width: 700px){
+  :root {
+    font-size: 6px;
+  }
+  #rad_player {
+    width: 10rem !important;
+  }
+  #rad_block_volume {
+    margin-left: 10rem!important;
+  }
+ }
+ @media screen and (max-width: 600px){
+  :root {
+    font-size: 5px;
+  }
+ }
+ @media screen and (max-width: 550px){
+  .CardConteinters {
+    left: 33rem;
+}
+.trash {
+  left: 85rem;
+}
+ }
